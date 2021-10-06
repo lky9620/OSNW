@@ -49,7 +49,7 @@ int main(int argc, char **argv)
         perror("read error : ");
         return 1;
     }
-    printf("read : %s", buf);
+    printf("read : %s \n", buf);
     close(server_sockfd);
     return 0;
 }
