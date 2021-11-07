@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
     serveraddr.sin_family = AF_INET;
     serveraddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    serveraddr.sin_port = htons(atoi(argv[1]));
+    serveraddr.sin_port = htons(3600);
 
     client_len = sizeof(serveraddr);
 

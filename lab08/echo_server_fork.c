@@ -10,7 +10,7 @@
 #include <signal.h>
 
 #define MAXLINE 1024
-#define PORTNUM 3602
+#define PORTNUM 3600
 
 int main(int argc, char **argv)
 {
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 	memset((void *)&server_addr, 0x00, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	server_addr.sin_port = htons(atoi(argv[1]));
+	server_addr.sin_port = htons(PORTNUM);
 
 	if (bind(listen_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
 	{
@@ -70,8 +70,8 @@ int main(int argc, char **argv)
 		if (pid == 0) // 자식프로세스
 		{
 			close(listen_fd);
-			close(fdA[1]);
-			close(fdB[0]);
+			// close(fdA[1]);
+			// close(fdB[0]);
 			printf("Client (pid: %d) Connected \n", getpid());
 
 			while ((readn = read(client_fd, buf_temp, MAXLINE)) > 0)
@@ -90,8 +90,8 @@ int main(int argc, char **argv)
 		else if (pid > 0) // 부모프로세스
 		{
 			close(client_fd);
-			close(fdA[1]);
-			close(fdB[0]);
+			// close(fdA[0]);
+			// close(fdB[1]);
 			if ((readn = read(fdB[0], buf_temp, sizeof(buf_temp))) > 0)
 			{
 				i++;
