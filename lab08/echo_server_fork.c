@@ -78,11 +78,9 @@ int main(int argc, char **argv)
 			{
 				printf("Read Data %s : %s", inet_ntoa(client_addr.sin_addr), buf_temp);
 
-				write(fdB[1], buf_temp, sizeof(buf_temp));
-				// sleep(1);
-				if ((readn = read(fdA[0], buf, sizeof(buf)) > 0))
-					write(client_fd, buf, sizeof(buf));
-				// memset(buf_temp, 0x00, MAXLINE);
+				write(fdB[1], buf_temp, sizeof(buf_temp)); // 자식프로세스가 클라이언트로부터 수신받은 자료를 자식프로세스 입장에서의 쓰기 파이프에 씀
+				if ((readn = read(fdA[0], buf, sizeof(buf)) > 0)) // 자식프로세스 입장에서 읽기 파이프에 읽을 자료가 있을 경우
+					write(client_fd, buf, sizeof(buf)); // 읽은 병합된 자료를 클라이언트에게 송신
 			}
 			close(client_fd);
 			return 0;
@@ -92,15 +90,15 @@ int main(int argc, char **argv)
 			close(client_fd);
 			// close(fdA[0]);
 			// close(fdB[1]);
-			if ((readn = read(fdB[0], buf_temp, sizeof(buf_temp))) > 0)
+			if ((readn = read(fdB[0], buf_temp, sizeof(buf_temp))) > 0) // 부모프로세스 입장에서 읽기 파이프에 읽을 자료가 있을 경우
 			{
 				i++;
 				buf_temp[strlen(buf_temp) - 1] = 0x20; // 0x20: Space ASCII Code
-				strcat(buf, buf_temp);				   // 생성한 임시 버퍼와 모든 메시지의 합쳐진 메시지를 담을 버퍼를
-				if (i == 3)
+				strcat(buf, buf_temp); // 생성한 임시 버퍼와 모든 메시지의 합쳐진 메시지를 담을 버퍼를 concat
+				if (i == 3) // 3개의 자식 프로세스가 클라이언트로부터 자료 수신을 완료 했을 경우
 				{
 					for(int j = 0;j<3;j++)
-						write(fdA[1], buf, sizeof(buf));
+						write(fdA[1], buf, sizeof(buf)); // 부모프로세스 입장에서 쓰기 파이프에 병합된 메시지를 씀(fork된 자식 프로세스가 3개이므로 3번 write를 수행)
 					printf("Concat data is %s\n", buf);
 				}
 			}
