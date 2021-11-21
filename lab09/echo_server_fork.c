@@ -12,7 +12,7 @@
 #include <signal.h>
 
 #define MAXLINE 1024
-#define PORTNUM 3600
+#define PORTNUM 3601
 
 struct trans_data
 {
